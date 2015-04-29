@@ -1,0 +1,523 @@
+(* Content-type: application/vnd.wolfram.mathematica *)
+
+(*** Wolfram Notebook File ***)
+(* http://www.wolfram.com/nb *)
+
+(* CreatedBy='Mathematica 8.0' *)
+
+(*CacheID: 234*)
+(* Internal cache information:
+NotebookFileLineBreakTest
+NotebookFileLineBreakTest
+NotebookDataPosition[       157,          7]
+NotebookDataLength[     18559,        514]
+NotebookOptionsPosition[     17277,        468]
+NotebookOutlinePosition[     17677,        486]
+CellTagsIndexPosition[     17634,        483]
+WindowFrame->Normal*)
+
+(* Beginning of Notebook Content *)
+Notebook[{
+Cell[BoxData[{
+ RowBox[{
+  RowBox[{"SetDirectory", "[", 
+   RowBox[{"NotebookDirectory", "[", "]"}], "]"}], 
+  ";"}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{"AppendTo", "[", 
+   RowBox[{"$Path", ",", "\"\</Users/mattmastin/Dropbox\>\""}], "]"}], 
+  ";"}]}], "Input",
+ CellChangeTimes->{{3.6271352264558992`*^9, 3.627135235333263*^9}, {
+   3.627841387406767*^9, 3.627841411275613*^9}, 3.627902920448448*^9}],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{"<<", "knottheory`"}]], "Input",
+ CellChangeTimes->{{3.6278413803398952`*^9, 3.627841384380966*^9}}],
+
+Cell[BoxData["\<\"Loading KnotTheory` version of March 22, 2011, \
+21:10:4.67737.\\nRead more at http://katlas.org/wiki/KnotTheory.\"\>"], \
+"Print",
+ CellChangeTimes->{3.627902937275498*^9, 3.62790341836123*^9, 
+  3.62790377667288*^9}]
+}, Open  ]],
+
+Cell["\<\
+The following method will read symmetry input as mined from KnotInfo. A bit \
+of pre-processing is needed. The symmetry types should be named:
+
+full
+reversible
+positive
+negative
+chiral (no symmetry)
+
+See the definitions below for the Whitten subgroups corresponding to each \
+symmetry name.
+
+In addition, knots should be end-line separated with whitespace seperating \
+each knot name from the symmetry type.\
+\>", "Text",
+ CellChangeTimes->{{3.627136069647253*^9, 3.627136162564135*^9}, {
+  3.627235779521274*^9, 3.6272357829176407`*^9}, {3.6279010725107813`*^9, 
+  3.627901074586334*^9}, {3.627901118677821*^9, 3.6279011380009823`*^9}}],
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{
+   RowBox[{"ReadData", "[", "FileName_", "]"}], ":=", 
+   RowBox[{"Select", "[", 
+    RowBox[{
+     RowBox[{"StringSplit", "[", 
+      RowBox[{"StringSplit", "[", 
+       RowBox[{
+        RowBox[{"Import", "[", "FileName", "]"}], ",", "\"\<\\n\>\""}], "]"}],
+       "]"}], ",", 
+     RowBox[{
+      RowBox[{"Not", "[", 
+       RowBox[{"#", "\[Equal]", 
+        RowBox[{"{", "}"}]}], "]"}], "&"}]}], "]"}]}], ";"}]], "Input",
+ CellChangeTimes->{{3.627135472001793*^9, 3.6271355516998262`*^9}, {
+  3.627841157492363*^9, 3.6278411780079527`*^9}}],
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{"RawKnotData", "=", 
+   RowBox[{"ReadData", "[", "\"\<knotinfo-symmetryPD-blank.txt\>\"", "]"}]}], 
+  ";"}]], "Input",
+ CellChangeTimes->{{3.627840542030258*^9, 3.627840558029788*^9}, {
+   3.627840605462421*^9, 3.627840607891307*^9}, 3.6278408470996323`*^9, {
+   3.627841239004154*^9, 3.627841256550457*^9}}],
+
+Cell["\<\
+Next we defnine the symmetry groups as lists of Whitten elements and define \
+the corresponding replacement rules for either the groups or the cosets of \
+each group in the Whitten group. Note that we are using the KnotInfo names \
+for the symmetry groups.\
+\>", "Text",
+ CellChangeTimes->{{3.627136193484861*^9, 3.627136229454323*^9}, {
+  3.6272357733798*^9, 3.6272357947164516`*^9}}],
+
+Cell[BoxData[{
+ RowBox[{
+  RowBox[{"full", "=", 
+   RowBox[{"{", 
+    RowBox[{
+     RowBox[{"{", 
+      RowBox[{"1", ",", 
+       RowBox[{"{", "1", "}"}], ",", 
+       RowBox[{"{", "1", "}"}]}], "}"}], ",", 
+     RowBox[{"{", 
+      RowBox[{"1", ",", 
+       RowBox[{"{", 
+        RowBox[{"-", "1"}], "}"}], ",", 
+       RowBox[{"{", "1", "}"}]}], "}"}], ",", 
+     RowBox[{"{", 
+      RowBox[{
+       RowBox[{"-", "1"}], ",", 
+       RowBox[{"{", "1", "}"}], ",", 
+       RowBox[{"{", "1", "}"}]}], "}"}], ",", 
+     RowBox[{"{", 
+      RowBox[{
+       RowBox[{"-", "1"}], ",", 
+       RowBox[{"{", 
+        RowBox[{"-", "1"}], "}"}], ",", 
+       RowBox[{"{", "1", "}"}]}], "}"}]}], "}"}]}], 
+  ";"}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{"reversible", "=", 
+   RowBox[{"{", 
+    RowBox[{
+     RowBox[{"{", 
+      RowBox[{"1", ",", 
+       RowBox[{"{", "1", "}"}], ",", 
+       RowBox[{"{", "1", "}"}]}], "}"}], 
+     RowBox[{"{", 
+      RowBox[{"1", ",", 
+       RowBox[{"{", 
+        RowBox[{"-", "1"}], "}"}], ",", 
+       RowBox[{"{", "1", "}"}]}], "}"}]}], "}"}]}], 
+  ";"}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{"positive", "=", 
+   RowBox[{"{", 
+    RowBox[{
+     RowBox[{"{", 
+      RowBox[{"1", ",", 
+       RowBox[{"{", "1", "}"}], ",", 
+       RowBox[{"{", "1", "}"}]}], "}"}], ",", 
+     RowBox[{"{", 
+      RowBox[{
+       RowBox[{"-", "1"}], ",", 
+       RowBox[{"{", "1", "}"}], ",", 
+       RowBox[{"{", "1", "}"}]}], "}"}]}], "}"}]}], 
+  ";"}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{"negative", "=", 
+   RowBox[{"{", 
+    RowBox[{
+     RowBox[{"{", 
+      RowBox[{"1", ",", 
+       RowBox[{"{", "1", "}"}], ",", 
+       RowBox[{"{", "1", "}"}]}], "}"}], ",", 
+     RowBox[{"{", 
+      RowBox[{
+       RowBox[{"-", "1"}], ",", 
+       RowBox[{"{", 
+        RowBox[{"-", "1"}], "}"}], ",", 
+       RowBox[{"{", "1", "}"}]}], "}"}]}], "}"}]}], 
+  ";"}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{"chiral", "=", 
+   RowBox[{"{", 
+    RowBox[{"{", 
+     RowBox[{"1", ",", 
+      RowBox[{"{", "1", "}"}], ",", 
+      RowBox[{"{", "1", "}"}]}], "}"}], "}"}]}], ";"}]}], "Input",
+ CellChangeTimes->{{3.627135731906541*^9, 3.627135850237595*^9}, {
+  3.62723548545319*^9, 3.627235492785228*^9}, {3.627235767681628*^9, 
+  3.627235769198656*^9}, {3.6279010904386673`*^9, 3.627901099222192*^9}}],
+
+Cell["\<\
+These are just the replacement rules for getting the symmetry groups and \
+cosets from the KnotInfo names.\
+\>", "Text",
+ CellChangeTimes->{{3.627904349555702*^9, 3.627904370156661*^9}}],
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{"SymReplacements", "=", 
+   RowBox[{"{", 
+    RowBox[{
+     RowBox[{"\"\<full\>\"", "\[Rule]", "full"}], ",", 
+     RowBox[{"\"\<reversible\>\"", "\[Rule]", "reversible"}], ",", 
+     RowBox[{"\"\<positive\>\"", "\[Rule]", "positive"}], ",", 
+     RowBox[{"\"\<negative\>\"", "\[Rule]", "negative"}], ",", 
+     RowBox[{"\"\<chiral\>\"", "\[Rule]", "chiral"}]}], " ", "}"}]}], 
+  ";"}]], "Input",
+ CellChangeTimes->{{3.627135580649354*^9, 3.627135649049447*^9}, {
+  3.627135694762909*^9, 3.627135701970171*^9}, {3.627235871406283*^9, 
+  3.6272359035739183`*^9}, {3.627901102504888*^9, 3.627901113527721*^9}}],
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{"CosetReplacements", "=", 
+   RowBox[{"{", 
+    RowBox[{
+     RowBox[{"\"\<full\>\"", "\[Rule]", 
+      RowBox[{"{", 
+       RowBox[{"{", 
+        RowBox[{"1", ",", 
+         RowBox[{"{", "1", "}"}], ",", 
+         RowBox[{"{", "1", "}"}]}], "}"}], "}"}]}], ",", 
+     RowBox[{"\"\<reversible\>\"", "\[Rule]", 
+      RowBox[{"{", 
+       RowBox[{
+        RowBox[{"{", 
+         RowBox[{"1", ",", 
+          RowBox[{"{", "1", "}"}], ",", 
+          RowBox[{"{", "1", "}"}]}], "}"}], ",", 
+        RowBox[{"{", 
+         RowBox[{
+          RowBox[{"-", "1"}], ",", 
+          RowBox[{"{", "1", "}"}], ",", 
+          RowBox[{"{", "1", "}"}]}], "}"}]}], "}"}]}], ",", 
+     RowBox[{"\"\<positive\>\"", "\[Rule]", 
+      RowBox[{"{", 
+       RowBox[{
+        RowBox[{"{", 
+         RowBox[{"1", ",", 
+          RowBox[{"{", "1", "}"}], ",", 
+          RowBox[{"{", "1", "}"}]}], "}"}], ",", 
+        RowBox[{"{", 
+         RowBox[{"1", ",", 
+          RowBox[{"{", 
+           RowBox[{"-", "1"}], "}"}], ",", 
+          RowBox[{"{", "1", "}"}]}], "}"}]}], "}"}]}], ",", 
+     RowBox[{"\"\<negative\>\"", "\[Rule]", 
+      RowBox[{"{", 
+       RowBox[{
+        RowBox[{"{", 
+         RowBox[{"1", ",", 
+          RowBox[{"{", "1", "}"}], ",", 
+          RowBox[{"{", "1", "}"}]}], "}"}], ",", 
+        RowBox[{"{", 
+         RowBox[{"1", ",", 
+          RowBox[{"{", 
+           RowBox[{"-", "1"}], "}"}], ",", 
+          RowBox[{"{", "1", "}"}]}], "}"}]}], "}"}]}], ",", 
+     RowBox[{"\"\<chiral\>\"", "\[Rule]", "full"}]}], "}"}]}], ";"}]], "Input",\
+
+ CellChangeTimes->{{3.6271358881491547`*^9, 3.627136004396442*^9}, {
+  3.627235916037842*^9, 3.627235925553322*^9}, {3.6279011569362*^9, 
+  3.627901159959715*^9}}],
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{"RawKnotDataWithSyms", "=", 
+   RowBox[{"RawKnotData", "/.", "SymReplacements"}]}], ";"}]], "Input",
+ CellChangeTimes->{{3.627135707876299*^9, 3.627135726882921*^9}, 
+   3.62713585895453*^9, {3.6271360075604897`*^9, 3.627136014848136*^9}, {
+   3.6271362327863903`*^9, 3.627136246035008*^9}, {3.627136462464197*^9, 
+   3.6271364707649527`*^9}, {3.627841206993802*^9, 3.627841236945259*^9}, {
+   3.627841276864555*^9, 3.627841288370026*^9}, {3.627903386927841*^9, 
+   3.6279033872302113`*^9}, {3.627903627562845*^9, 3.6279036278648567`*^9}, {
+   3.6279037557632732`*^9, 3.627903756021709*^9}}],
+
+Cell["\<\
+The entry for the PD codes are strings of the form \
+\[OpenCurlyDoubleQuote][[1,5,2,4],[3,1,4,6],[5,3,6,2]]\[CloseCurlyDoubleQuote]\
+ so we can just do some string manipulation to get the correct expression for \
+use in KnotTheory.\
+\>", "Text",
+ CellChangeTimes->{{3.627904378091037*^9, 3.627904425094912*^9}}],
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{"GetPD", "[", "PDString_", "]"}], ":=", 
+  RowBox[{"ToExpression", "[", 
+   RowBox[{"StringInsert", "[", 
+    RowBox[{
+     RowBox[{"StringInsert", "[", 
+      RowBox[{
+       RowBox[{"StringReplace", "[", 
+        RowBox[{
+         RowBox[{"StringDrop", "[", 
+          RowBox[{
+           RowBox[{"StringDrop", "[", 
+            RowBox[{"PDString", ",", "1"}], "]"}], ",", 
+           RowBox[{"-", "1"}]}], "]"}], ",", 
+         RowBox[{"\"\<[\>\"", "\[Rule]", "\"\<X[\>\""}]}], "]"}], ",", 
+       "\"\<PD[\>\"", ",", "1"}], "]"}], ",", "\"\<]\>\"", ",", 
+     RowBox[{"-", "1"}]}], "]"}], "]"}]}]], "Input",
+ CellChangeTimes->{{3.6279031414498253`*^9, 3.6279032540573463`*^9}, {
+  3.627903313334902*^9, 3.6279033300406837`*^9}}],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{"GetPD", "[", 
+  RowBox[{
+   RowBox[{"RawKnotDataWithSyms", "[", 
+    RowBox[{"[", "1", "]"}], "]"}], "[", 
+   RowBox[{"[", "3", "]"}], "]"}], "]"}]], "Input",
+ CellChangeTimes->{{3.6279033321258707`*^9, 3.627903345031835*^9}, {
+  3.6279033999752007`*^9, 3.627903400299856*^9}, {3.627903631812896*^9, 
+  3.627903632094058*^9}, {3.6279037592051897`*^9, 3.627903759520009*^9}}],
+
+Cell[BoxData[
+ RowBox[{"PD", "[", 
+  RowBox[{
+   RowBox[{"X", "[", 
+    RowBox[{"1", ",", "5", ",", "2", ",", "4"}], "]"}], ",", 
+   RowBox[{"X", "[", 
+    RowBox[{"3", ",", "1", ",", "4", ",", "6"}], "]"}], ",", 
+   RowBox[{"X", "[", 
+    RowBox[{"5", ",", "3", ",", "6", ",", "2"}], "]"}]}], "]"}]], "Output",
+ CellChangeTimes->{
+  3.6279033454994507`*^9, {3.6279034007506523`*^9, 3.6279034188280163`*^9}, 
+   3.62790363852429*^9, 3.6279037770728292`*^9}]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{"DrawPD", "[", 
+  RowBox[{"GetPD", "[", 
+   RowBox[{
+    RowBox[{"RawKnotDataWithSyms", "[", 
+     RowBox[{"[", "4", "]"}], "]"}], "[", 
+    RowBox[{"[", "3", "]"}], "]"}], "]"}], "]"}]], "Input",
+ CellChangeTimes->{{3.6279032551964197`*^9, 3.62790326491028*^9}, {
+  3.627903352262774*^9, 3.627903362957184*^9}, {3.627903403381895*^9, 
+  3.6279034036291103`*^9}, {3.627903634006624*^9, 3.627903634276456*^9}, {
+  3.627903761432353*^9, 3.627903761792039*^9}}],
+
+Cell[BoxData[
+ GraphicsBox[{
+   {RGBColor[0, 0, 0], 
+    CircleBox[{-0.24132195120748606`, 0.05716071987716165}, 
+     0.6435651914695022, {0.036187166858692915`, 0.41589073904034923`}], 
+    CircleBox[{-0.24132195120748606`, 0.05716071987716165}, 
+     0.6435651914695022, {0.47211704501889784`, 1.1265731296021873`}]}, 
+   {RGBColor[0, 0, 0], 
+    CircleBox[{0.3503813088376375, -0.1496745628376448}, 0.4833991196035605, {
+     0.8314181063829201, 2.1899737127079493`}]}, 
+   {RGBColor[0, 0, 0], 
+    CircleBox[{-0.23738193738213625`, 0.500190616164199}, 
+     0.3799285088128612, {-1.7103096637426312`, -1.5050599067787533`}], 
+    CircleBox[{-0.23738193738213625`, 0.500190616164199}, 
+     0.3799285088128612, {-1.4098175321389206`, -1.0895731138443046`}]}, 
+   {RGBColor[0, 0, 0], 
+    CircleBox[{-0.5536605367139421, -0.0009202062895291019}, 
+     0.3799285088128474, {-0.03645316913202674, 0.5842833807663211}]}, 
+   {RGBColor[0, 0, 0], 
+    CircleBox[{0.24691491424282097`, 0.17724072345788294`}, 
+     0.5424003520166353, {-1.0756941775482238`, -0.49084655193133453`}], 
+    CircleBox[{0.24691491424282097`, 0.17724072345788294`}, 
+     0.5424003520166353, {-1.5612893429615187`, -1.1424074332424194`}]}, 
+   {RGBColor[0, 0, 0], 
+    CircleBox[{-0.053761689628074705`, -0.2991503462404123}, 
+     0.5424003520166012, {-0.6351797310449623, 0.43526305998527703`}]}, 
+   {RGBColor[0, 0, 0], 
+    CircleBox[{-0.39873004370083964`, -0.015224512003614576`}, 
+     0.289403826750766, {1.7466708914548605`, 2.839881258149214}], 
+    CircleBox[{-0.39873004370083964`, -0.015224512003614576`}, 
+     0.289403826750766, {1.1971352117209986`, 1.6216369768070416`}]}, 
+   {RGBColor[0, 0, 0], 
+    CircleBox[{-0.15781041055196038`, 0.36648780039294243`}, 
+     0.28940382675075027`, {2.317277766054032, 3.960023812482302}]}, 
+   {RGBColor[0, 0, 0], 
+    CircleBox[{0.2858643349890143, -0.2518950541886707}, 
+     0.4833991196035459, {-3.315999995684333, -2.75605373707094}], 
+    CircleBox[{0.2858643349890143, -0.2518950541886707}, 
+     0.4833991196035459, {-2.681197801457353, -1.9574443893590499`}]}, 
+   {RGBColor[0, 0, 0], 
+    CircleBox[{-0.1554283760143368, 0.19325023146425147`}, 
+     0.6435651914694727, {-2.2525994125786517`, -1.1622134498349124`}]}, 
+   {RGBColor[0, 0, 0], 
+    CircleBox[{0.7930159981189736, 0.09460682662830468}, 
+     0.39145036605979583`, {-3.1054054867311, -2.706329593604516}]}, 
+   {RGBColor[0, 0, 0], 
+    CircleBox[{-0.11574236364542616`, 0.3210110768028774}, 
+     0.35135423400540466`, {1.1265731296021873`, 2.317277766054032}]}, 
+   {RGBColor[0, 0, 0], 
+    CircleBox[{-0.27351575617552776`, 0.24287415494996858`}, 
+     0.12008737644077469`, {-2.3231614946972843`, -1.710309663742631}]}, 
+   {RGBColor[0, 0, 0], 
+    CircleBox[{-0.5789813447828287, 1.1543868411795766`}, 
+     1.1179412837435359`, {-1.0895731138443048`, -0.9516189408818444}]}, 
+   {RGBColor[0, 0, 0], 
+    CircleBox[{0.5169113016697076, 0.03293412442389811}, 
+     0.2362591366464654, {-0.49084655193133436`, 0.8314181063829202}]}, 
+   {RGBColor[0, 0, 0], 
+    CircleBox[{0.2557928841850743, -0.756567792942298}, 0.3914503660597621, {
+     1.5803033106282744`, 1.9793792037548807`}]}, 
+   {RGBColor[0, 0, 0], 
+    CircleBox[{-0.33957797732770656`, -0.033633368644164}, 
+     0.35135423400547133`, {2.839881258149214, 4.030585894600934}]}, 
+   {RGBColor[0, 0, 0], 
+    CircleBox[{-0.3369250764037172, 0.1424086265268963}, 
+     0.12008737644076918`, {0.5842833807663211, 1.1971352117209986`}]}, 
+   {RGBColor[0, 0, 0], 
+    CircleBox[{-1.2911830178770303`, 0.02597674036549201}, 
+     1.1179412837431466`, {-0.17440734209454062`, -0.036453169132027695`}]}, 
+   {RGBColor[0, 0, 0], 
+    CircleBox[{0.1926712955555827, -0.4807907260070032}, 
+     0.23625913664650416`, {-1.9574443893590499`, -0.6351797310449622}]}, 
+   {RGBColor[0, 0, 0]}},
+  AspectRatio->1]], "Output",
+ CellChangeTimes->{
+  3.62790326555581*^9, {3.627903353082456*^9, 3.627903365054207*^9}, {
+   3.6279034056436234`*^9, 3.6279034208001003`*^9}, 3.627903640744066*^9, 
+   3.627903778973638*^9, 3.627903813001376*^9}]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{"RawKnotDataWithSyms", "[", 
+   RowBox[{"[", "1", "]"}], "]"}], "[", 
+  RowBox[{"[", "3", "]"}], "]"}]], "Input",
+ CellChangeTimes->{{3.62790382711882*^9, 3.627903837375328*^9}}],
+
+Cell[BoxData["\<\"[[1,5,2,4],[3,1,4,6],[5,3,6,2]]\"\>"], "Output",
+ CellChangeTimes->{{3.627903833591881*^9, 3.627903837777443*^9}, 
+   3.627904441251789*^9}]
+}, Open  ]],
+
+Cell["\<\
+Now we replace the PD codes with the correct expression and write the data to \
+file.\
+\>", "Text",
+ CellChangeTimes->{{3.6279044573314466`*^9, 3.627904469624535*^9}}],
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{"KnotDataWithSyms", "=", 
+   RowBox[{"Table", "[", 
+    RowBox[{
+     RowBox[{"ReplacePart", "[", 
+      RowBox[{
+       RowBox[{"RawKnotDataWithSyms", "[", 
+        RowBox[{"[", "i", "]"}], "]"}], ",", 
+       RowBox[{"3", "\[Rule]", 
+        RowBox[{"GetPD", "[", 
+         RowBox[{
+          RowBox[{"RawKnotDataWithSyms", "[", 
+           RowBox[{"[", "i", "]"}], "]"}], "[", 
+          RowBox[{"[", "3", "]"}], "]"}], "]"}]}]}], "]"}], ",", 
+     RowBox[{"{", 
+      RowBox[{"i", ",", "1", ",", 
+       RowBox[{"Length", "[", "RawKnotDataWithSyms", "]"}]}], "}"}]}], 
+    "]"}]}], ";"}]], "Input",
+ CellChangeTimes->{{3.6279034265135813`*^9, 3.627903426675354*^9}, {
+   3.627903646085803*^9, 3.627903752408231*^9}, 3.627903794760746*^9, {
+   3.627903936133745*^9, 3.627903940453425*^9}}],
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{"Export", "[", 
+   RowBox[{"\"\<KnotDataWithSyms12.txt\>\"", ",", "KnotDataWithSyms"}], "]"}],
+   ";"}]], "Input",
+ CellChangeTimes->{{3.6278412174110527`*^9, 3.627841220834569*^9}, {
+  3.627841291137453*^9, 3.627841350480398*^9}, {3.627903770297276*^9, 
+  3.6279037733206997`*^9}, {3.6279039697763443`*^9, 3.627903971731599*^9}}]
+},
+WindowSize->{1492, 1066},
+WindowMargins->{{381, Automatic}, {88, Automatic}},
+ShowSelection->True,
+Magnification->1.5,
+FrontEndVersion->"8.0 for Mac OS X x86 (32-bit, 64-bit Kernel) (November 6, \
+2010)",
+StyleDefinitions->"Default.nb"
+]
+(* End of Notebook Content *)
+
+(* Internal cache information *)
+(*CellTagsOutline
+CellTagsIndex->{}
+*)
+(*CellTagsIndex
+CellTagsIndex->{}
+*)
+(*NotebookFileOutline
+Notebook[{
+Cell[557, 20, 411, 10, 64, "Input"],
+Cell[CellGroupData[{
+Cell[993, 34, 123, 2, 40, "Input"],
+Cell[1119, 38, 236, 4, 54, "Print"]
+}, Open  ]],
+Cell[1370, 45, 647, 18, 264, "Text"],
+Cell[2020, 65, 578, 16, 42, "Input"],
+Cell[2601, 83, 342, 7, 40, "Input"],
+Cell[2946, 92, 395, 7, 62, "Text"],
+Cell[3344, 101, 2323, 78, 133, "Input"],
+Cell[5670, 181, 196, 4, 39, "Text"],
+Cell[5869, 187, 642, 13, 40, "Input"],
+Cell[6514, 202, 1747, 51, 64, "Input"],
+Cell[8264, 255, 625, 10, 40, "Input"],
+Cell[8892, 267, 321, 6, 39, "Text"],
+Cell[9216, 275, 766, 19, 88, "Input"],
+Cell[CellGroupData[{
+Cell[10007, 298, 398, 8, 40, "Input"],
+Cell[10408, 308, 457, 11, 40, "Output"]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[10902, 324, 481, 10, 40, "Input"],
+Cell[11386, 336, 4089, 77, 562, "Output"]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[15512, 418, 212, 5, 40, "Input"],
+Cell[15727, 425, 158, 2, 40, "Output"]
+}, Open  ]],
+Cell[15900, 430, 177, 4, 39, "Text"],
+Cell[16080, 436, 826, 21, 64, "Input"],
+Cell[16909, 459, 364, 7, 40, "Input"]
+}
+]
+*)
+
+(* End of internal cache information *)
