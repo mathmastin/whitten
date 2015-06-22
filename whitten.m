@@ -40,6 +40,8 @@ Needs["PlotLegends`"]
 (*"ArcToLeft" returns the number (or tuple) for the arc to the left of the given arc at the given crossing.*)
 (**)
 (*"PDtoList" and "ListToPD" fix the heads in PD objects (or nested lists of depth two) to go back and forth to crossings*)
+(**)
+(*"ListToPD" turns a list of (ordered) quadruples and returns the corresponding KnotTheory PD code.*)
 
 
 PDtoEPD[ThisPD_PD] := Module[{rules,arcs,i,newEPD},
@@ -65,6 +67,12 @@ PDtoList[ThisPD_] := Module[{L},
 	L[[0]] = List;
 	ToList /@ L
 ];
+
+ListToPD[L_] := Module[{MyQuads,MyPD},
+	MyPD="PD[";
+	MyQuads = "X["<>StringDrop[StringDrop[ToString[#],1],-1]<>"],"& /@ L;
+	ToExpression[StringDrop[StringJoin["PD[",MyQuads],-1]<>"]"]
+]
 
 AllArcs[ThisPD_] := DeleteDuplicates[Flatten[PDtoList[ThisPD],1]];
 AllComponents[ThisPD_] := Module[{compRule},
@@ -167,7 +175,7 @@ NextArc[arc_,ThisPD_] := Module[{headCrossing,pos},
 ];
 
 
-(* ::Section:: *)
+(* ::Section::Closed:: *)
 (*BlackboardDouble*)
 
 
@@ -289,7 +297,7 @@ BlackboardDouble[component_,ThisPD_PD] := Module[{newEPD,arc,startArc,startPrima
 ];	
 
 
-(* ::Section:: *)
+(* ::Section::Closed:: *)
 (*Faces of PD diagrams*)
 
 
@@ -352,7 +360,7 @@ PDFaces[ThisPD_PD] := OrientedPDFaces[ThisPD] /. {i_Integer,"f"|"r"} :> i
 
 
 
-(* ::Section:: *)
+(* ::Section::Closed:: *)
 (*NiceDrawPD*)
 
 
@@ -1291,7 +1299,7 @@ NiceDrawPD::about = "
 (*"\n  NiceDrawPD[pd] takes the planar diagram description pd and creates a\n  graphics object containing a picture of the knot.\n\n  NiceDrawPD[pd,options], where options is a list of rules, allows the user\n  to control some of the parameters.  \n\n\tGap->g sets the gap around a crossing to g\n\tOrientation->True/False controls the display of orientation arrows\n\tEdgeLabels->True/False controls the display of labels for the edges\n\tComponentStyles->{{a},{b},{c},...} sets the style for the components\n\t\tto {a}, {b}, {c} (repeated cyclically if there are more components\n\t\tthan styles. For instance, {{Red},{Green},{Blue}} displays component 1 \n\t\tin Red, component 2 in Green and component 3 in Blue. The components\n\t\tare numbered in the natural order (different from the order in Skeleton),\n\t\twhere the arcs in component 1 are numbered {1,...,k}, those in comp 2\n\t\tare numbered {k+1, ...., l} and so forth.\n\tOuterFace->{e_1,e_2,...,e_n} sets the face at infinity to a face which \n\t\thas edges e_1, e_2, ..., e_n in the planar diagram description.  \n"*)
 
 
-(* ::Section:: *)
+(* ::Section::Closed:: *)
 (*SpliceTwists, FramedDouble, and ZeroFrame*)
 
 
@@ -1405,7 +1413,7 @@ ZeroFramedDouble[Component_,ThisPD_] := FramedDouble[0,Component,ThisPD];
 
 
 
-(* ::Section:: *)
+(* ::Section::Closed:: *)
 (*Mirror Symmetry*)
 
 
@@ -1437,7 +1445,7 @@ If[x[[4]] == NextArc[x[[2]],PD],RotateLeft[x,1],RotateRight[x,1]]
 MirrorPD[sign_,ThisPD_PD] := If [sign == 1,ThisPD,PD @@ (SwitchCrossing[#,ThisPD] & /@ (List @@ ThisPD))];
 
 
-(* ::Section:: *)
+(* ::Section::Closed:: *)
 (*Reversing the Orientation on a Component*)
 
 
@@ -1471,7 +1479,7 @@ If [sign == 1, Return[ThisPD],
 OrientComponent[L_Link,{sign_,n_}] := OrientComponent[PD[L],{sign,n}];
 
 
-(* ::Section:: *)
+(* ::Section::Closed:: *)
 (*Permuting Components. *)
 
 
@@ -1491,7 +1499,7 @@ PermutePD[ThisPD_PD,Perm_List] := Module[{AllComps,PermComps,Rules},
 ];	
 
 
-(* ::Section:: *)
+(* ::Section::Closed:: *)
 (*Putting it Together: Applying a Whitten Group Element to a Given Link*)
 
 
@@ -1517,7 +1525,7 @@ ApplyWhitten[W_,L_] := Module[{Mir,Rev,P},
 ];
 
 
-(* ::Section:: *)
+(* ::Section::Closed:: *)
 (*Listing Whitten Group Elements*)
 
 
@@ -1617,7 +1625,7 @@ WhittenTablePrint[L_,n_] := Module[{LStrings,Rows,Ands,i},
 (*We now add a few knot invariants to KnotTheory's basic collection.*)
 
 
-(* ::Section:: *)
+(* ::Section::Closed:: *)
 (*Linking Numbers and the Linking Matrix*)
 
 
@@ -1662,7 +1670,7 @@ LinkM
 ];
 
 
-(* ::Section:: *)
+(* ::Section::Closed:: *)
 (*The (Corrected) Multivariable Alexander Polynomial*)
 
 
@@ -1676,7 +1684,7 @@ CorrectedMultivariableAlexander[{L_,P_},tt_] :=
   MultivariableAlexander[L][tt] /. Table[tt[i] -> tt[P[[i]]],{i,1,NumComponents[L]}];
 
 
-(* ::Section:: *)
+(* ::Section::Closed:: *)
 (*Knot types of different components*)
 
 
@@ -1719,7 +1727,7 @@ ComponentsOk[L_,M_] := Module[{LComps,MComps,QQ,AllMatch},
 (**)
 
 
-(* ::Section:: *)
+(* ::Section::Closed:: *)
 (*The Satellite Lemma.*)
 
 
@@ -1795,7 +1803,7 @@ SatellitePureExchanges[ThisPD_PD] := Module[{cases,nc},
 	
 
 
-(* ::Section:: *)
+(* ::Section::Closed:: *)
 (*Comparing links *)
 
 
@@ -1815,7 +1823,7 @@ DifferentLinkQ[L_,M_] := Module[{QQ,a,z,TT},
 ];
 
 
-(* ::Section:: *)
+(* ::Section::Closed:: *)
 (*Computing Whitten symmetry subgroups.*)
 
 
@@ -1873,7 +1881,7 @@ Possibles
 ];
 
 
-(* ::Section:: *)
+(* ::Section::Closed:: *)
 (*Processing Whitten groups and elements*)
 
 
@@ -2071,7 +2079,7 @@ SigmaGroups
 
 
 
-(* ::Section:: *)
+(* ::Section::Closed:: *)
 (*Converting from Hoste-Thistlethwaite Link Tables to Rolfsen's Tables (and back).*)
 
 
@@ -2360,7 +2368,7 @@ If [Name[[0]] == Link, Return[Name]];
 
 
 
-(* ::Section:: *)
+(* ::Section::Closed:: *)
 (*Display of Whitten Groups *)
 
 
@@ -2401,7 +2409,7 @@ WhittenGroupGraphic[Pic_Graphics|Pic_Rotate,G_] := {Pic,IdentifyWhittenGroup[G],
 WhittenGroupTableWithGraphics[T_] := Column[Join[WhittenGroupGraphic[#[[1]],#[[2]]],{RolfsenNumber[#[[1]]]}]] & /@ T;
 
 
-(* ::Section:: *)
+(* ::Section::Closed:: *)
 (*Digrammatic Symmetries*)
 
 
